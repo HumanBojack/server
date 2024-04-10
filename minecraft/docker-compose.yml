@@ -1,0 +1,23 @@
+services:
+  minecraft:
+    image: itzg/minecraft-server
+    ports:
+      - "25565:25565"
+    volumes:
+      - ./data:/data
+    environment:
+      EULA: "TRUE"
+      VERSION: "1.20.4"
+      TYPE: "PAPER"
+      MOTD: "A Minecraft Server"
+      SNOOPER_ENABLED: "false"
+      ENABLE_WHITELIST: "true"
+      OVERRIDE_WHITELIST: "true"
+      ENABLE_AUTOPAUSE: "true"
+      JVM_DD_OPTS: "disable.watchdog:true"
+      ENABLE_RCON: "true"
+      MEMORY: ""
+      JVM_XX_OPTS: "-XX:MaxRAMPercentage=75"
+    env_file:
+      - /opt/configs/secrets/minecraft.env
+    mem_limit: 8g
