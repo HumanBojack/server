@@ -1,0 +1,27 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - prometheus-data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.prometheus.rule=Host(`prometheus.home.spyr.dev`)"
+      - "traefik.http.routers.prometheus.entrypoints=websecure"
+      - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
+      - "traefik.http.routers.prometheus.tls=true"
+      - "traefik.http.routers.prometheus.tls.certresolver=porkbun"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.middlewares.basic-auth.basicauth.usersfile=/run/secrets/usersfile"
+      - "traefik.http.routers.prometheus.middlewares=basic-auth"
+    networks:
+      - traefik
+
+volumes:
+  prometheus-data:
+
+networks:
+  traefik:
+    external: true
