@@ -18,6 +18,19 @@ services:
       - "traefik.http.routers.prometheus.middlewares=basic-auth"
     networks:
       - traefik
+      - default
+    
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    restart: unless-stopped
+    command:
+      - '--path.rootfs=/host'
+    pid: host
+    volumes:
+      - '/:/host:ro,rslave'
+    networks:
+      - default
 
 volumes:
   prometheus-data:
