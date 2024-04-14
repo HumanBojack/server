@@ -1,6 +1,7 @@
 services:
   adminer:
     image: adminer
+    container_name: adminer
     restart: unless-stopped
     networks:
       - traefik

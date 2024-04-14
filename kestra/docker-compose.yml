@@ -24,6 +24,7 @@ services:
 
   kestra:
     image: kestra/kestra:latest-full
+    container_name: kestra
     user: root
     restart: unless-stopped
     command: server standalone --worker-thread=128
