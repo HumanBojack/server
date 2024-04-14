@@ -26,6 +26,7 @@ services:
     restart: unless-stopped
     command:
       - '--path.rootfs=/host'
+      - '--collector.hwmon'
     pid: host
     volumes:
       - '/:/host:ro,rslave'
