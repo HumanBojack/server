@@ -58,3 +58,10 @@ This file should contain the users for Traefik basic authentication. It should h
 username:bcrypt_hashed_password
 other_username:bcrypt_hashed_password
 ```
+
+### Authelia
+In order to use Authelia, you will need to create the following files:
+- `authelia/config/configuration.yml`
+- `authelia/config/users_database.yml`
+
+You can find examples of these files in the `authelia/` directory.

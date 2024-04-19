@@ -1,0 +1,90 @@
+---
+###############################################################
+#                   Authelia configuration                    #
+###############################################################
+
+# This secret can also be set using the env variables AUTHELIA_JWT_SECRET_FILE
+# generate with 'docker run authelia/authelia:latest authelia crypto rand --length 128 --charset alphanumeric'
+jwt_secret: generate_this
+default_redirection_url: https://auth.home.spyr.dev
+
+log:
+  level: debug
+
+totp:
+  issuer: auth.home.spyr.dev
+
+authentication_backend:
+  file:
+    path: /config/users_database.yml
+
+access_control:
+  default_policy: deny
+  rules:
+    # Rules applied to everyone
+    # - domain: unsecure.whoami.example.com
+    #   policy: bypass
+    # - domain: secure.whoami.example.com
+    #   policy: one_factor
+    - domain: "*.home.spyr.dev"
+      # policy: two_factor
+      policy: one_factor
+
+session:
+  name: authelia_session
+  domain: spyr.dev
+  secret: generate_this
+  expiration: 1h
+  inactivity: 5m
+  remember_me_duration:  1M
+
+regulation:
+  max_retries: 3
+  find_time: 120
+  ban_time: 300
+
+storage:
+# generate with 'docker run authelia/authelia:latest authelia crypto rand --length 128 --charset alphanumeric'
+  encryption_key: generate_this
+  local:
+    path: /config/db.sqlite3
+
+notifier:
+  # smtp:
+  #   username: your_username
+  #   # This secret can also be set using the env variables AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE
+  #   password: your_password_for_the_email
+  #   host: your.smtp.provider
+  #   port: 465
+  #   sender: test@example.com
+  # For testing purpose, notifications can be sent in a file. 
+  filesystem:
+    filename: /config/notification.txt
+
+identity_providers:
+  oidc:
+    ## The other portions of the mandatory OpenID Connect 1.0 configuration go here.
+    ## See: https://www.authelia.com/c/oidc
+    ##### generate with 'docker run authelia/authelia:latest authelia crypto rand --length 128 --charset alphanumeric'
+    hmac_secret: generate_this
+    
+    # generate with docker run -u "$(id -u):$(id -g)" -v ".:/keys" authelia/authelia authelia crypto pair rsa generate --bits 4096 --directory /keys
+    issuer_private_key: |
+        -----BEGIN PRIVATE KEY-----
+        generate_this
+        -----END PRIVATE KEY-----
+    clients:
+    - id: portainer
+      description: Portainer
+      # generate with 'docker run authelia/authelia:latest authelia crypto hash generate pbkdf2 --variant sha512 --random --random.length 72 --random.charset rfc3986'
+      secret: generate_this
+      public: false
+      authorization_policy: two_factor
+      redirect_uris:
+        - https://portainer.home.spyr.dev
+      scopes:
+        - openid
+        - profile
+        - groups
+        - email
+      userinfo_signing_algorithm: none
