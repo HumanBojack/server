@@ -13,6 +13,7 @@ services:
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
       - "traefik.http.routers.grafana.tls=true"
       - "traefik.http.routers.grafana.tls.certresolver=porkbun"
+      - "traefik.http.routers.grafana.middlewares=authelia@docker"
     networks:
       - traefik
       - default

@@ -11,8 +11,7 @@ services:
       - "traefik.http.services.adminer.loadbalancer.server.port=8080"
       - "traefik.http.routers.adminer.entrypoints=websecure"
       - "traefik.http.routers.adminer.tls.certresolver=porkbun"
-      - "traefik.http.middlewares.basic-auth.basicauth.usersfile=/run/secrets/usersfile"
-      - "traefik.http.routers.adminer.middlewares=basic-auth"
+      - "traefik.http.routers.adminer.middlewares=authelia@docker"
 
 networks:
   traefik:

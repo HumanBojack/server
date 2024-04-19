@@ -66,8 +66,7 @@ services:
       - "traefik.http.services.kestra.loadbalancer.server.port=8080"
       - "traefik.http.routers.kestra.tls=true"
       - "traefik.http.routers.kestra.tls.certresolver=porkbun"
-      - "traefik.http.middlewares.basic-auth.basicauth.usersfile=/run/secrets/usersfile"
-      - "traefik.http.routers.kestra.middlewares=basic-auth"
+      - "traefik.http.routers.kestra.middlewares=authelia@docker"
     networks:
       - traefik
       - default
