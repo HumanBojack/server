@@ -1,3 +1,4 @@
 secrets/
 minecraft/data/
 authelia/config/
+mlflow/db/

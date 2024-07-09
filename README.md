@@ -65,3 +65,11 @@ In order to use Authelia, you will need to create the following files:
 - `authelia/config/users_database.yml`
 
 You can find examples of these files in the `authelia/` directory.
+
+### MLflow
+In order to use MLflow, you will need to create the following files:
+- `mlflow/db/mlflow.db`
+- `mlflow/db/basic_auth.db`
+- `secrets/mlflow-auth-config.ini`
+
+You can use the `auth-config-sample.ini` file as a template for the `mlflow-auth-config.ini` file.

@@ -1,0 +1,22 @@
+services:
+  mlflow:
+    image: ghcr.io/mlflow/mlflow
+    environment:
+      - MLFLOW_AUTH_CONFIG_PATH=/config/auth-config.ini
+    volumes:
+      - /opt/configs/secrets/mlflow-auth-config.ini:/config/auth-config.ini
+      - ./db/mlflow.db:/mlflow.db
+      - ./db/basic_auth.db:/basic_auth.db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mlflow.rule=Host(`mlflow.home.spyr.dev`)"
+      - "traefik.http.services.mlflow.loadbalancer.server.port=5000"
+      - "traefik.http.routers.mlflow.entrypoints=websecure"
+      - "traefik.http.routers.mlflow.tls.certresolver=porkbun"
+    command: mlflow server --host 0.0.0.0 --app-name basic-auth --backend-store-uri sqlite:///mlflow.db
+    networks:
+      - traefik
+  
+networks:
+  traefik:
+    external: true
