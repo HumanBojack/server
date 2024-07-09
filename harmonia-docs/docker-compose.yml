@@ -1,0 +1,19 @@
+services:
+  harmonia-docs:
+    image: ghcr.io/harmon-ia/harmonia-docs:latest
+    container_name: harmonia-docs
+    restart: unless-stopped
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.harmonia-docs.rule=Host(`docs.home.spyr.dev`)"
+      - "traefik.http.services.harmonia-docs.loadbalancer.server.port=80"
+      - "traefik.http.routers.harmonia-docs.entrypoints=websecure"
+      - "traefik.http.routers.harmonia-docs.tls.certresolver=porkbun"
+      - "traefik.http.routers.harmonia-docs.middlewares=authelia@docker"
+      - "com.centurylinklabs.watchtower.enable=true"
+
+networks:
+  traefik:
+    external: true
