@@ -1,0 +1,29 @@
+services:
+  n8n:
+    container_name: "n8n"
+    image: docker.n8n.io/n8nio/n8n
+    environment:
+      - GENERIC_TIMEZONE=Europe/Paris
+      - TZ=Europe/Paris
+      - WEBHOOK_URL=https://n8n.home.spyr.dev/
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - /opt/configs/n8n/common_data:/common_data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.n8n.rule=Host(`n8n.home.spyr.dev`)"
+      - "traefik.http.routers.n8n.entrypoints=websecure"
+      - "traefik.http.services.n8n.loadbalancer.server.port=5678"
+      - "traefik.http.routers.n8n.tls=true"
+      - "traefik.http.routers.n8n.tls.certresolver=porkbun"
+      - "traefik.http.routers.n8n.middlewares=authelia@docker"
+    networks:
+      - traefik
+
+networks:
+  traefik:
+    external: true
+
+volumes:
+  n8n_data:
