@@ -73,3 +73,6 @@ In order to use MLflow, you will need to create the following files:
 - `secrets/mlflow-auth-config.ini`
 
 You can use the `auth-config-sample.ini` file as a template for the `mlflow-auth-config.ini` file.
+
+### Metube
+In order to use cookies with metube, you can add your cookies to the `secrets/cookies.txt` file.
