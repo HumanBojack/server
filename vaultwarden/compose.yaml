@@ -1,0 +1,26 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: unless-stopped
+    environment:
+      - SIGNUPS_ALLOWED=false
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.vaultwarden.rule=Host(`pass.home.spyr.dev`)"
+      - "traefik.http.routers.vaultwarden.entrypoints=websecure"
+      - "traefik.http.services.vaultwarden.loadbalancer.server.port=80"
+      - "traefik.http.routers.vaultwarden.tls=true"
+      - "traefik.http.routers.vaultwarden.tls.certresolver=porkbun"
+    volumes:
+      - vaultwarden_data:/data
+    networks:
+      - traefik
+
+volumes:
+  vaultwarden_data:
+
+networks:
+  traefik:
+    external: true
