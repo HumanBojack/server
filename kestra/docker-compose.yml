@@ -67,6 +67,7 @@ services:
       - "traefik.http.routers.kestra.tls=true"
       - "traefik.http.routers.kestra.tls.certresolver=porkbun"
       - "traefik.http.routers.kestra.middlewares=authelia@docker"
+      - "com.centurylinklabs.watchtower.enable=true"
     networks:
       - traefik
       - default

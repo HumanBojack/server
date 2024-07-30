@@ -18,6 +18,7 @@ services:
       - "traefik.http.routers.n8n.tls=true"
       - "traefik.http.routers.n8n.tls.certresolver=porkbun"
       - "traefik.http.routers.n8n.middlewares=authelia@docker"
+      - "com.centurylinklabs.watchtower.enable=true"
     networks:
       - traefik
 

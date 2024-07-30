@@ -13,6 +13,7 @@ services:
       - "traefik.http.services.vaultwarden.loadbalancer.server.port=80"
       - "traefik.http.routers.vaultwarden.tls=true"
       - "traefik.http.routers.vaultwarden.tls.certresolver=porkbun"
+      - "com.centurylinklabs.watchtower.enable=true"
     volumes:
       - vaultwarden_data:/data
     networks:
