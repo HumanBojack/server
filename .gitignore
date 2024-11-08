@@ -4,3 +4,5 @@ authelia/config/
 mlflow/db/
 n8n/common_data/
 authentik/.env
+authentik/media/
+outline/.env
