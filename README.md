@@ -76,3 +76,6 @@ You can use the `auth-config-sample.ini` file as a template for the `mlflow-auth
 
 ### Metube
 In order to use cookies with metube, you can add your cookies to the `secrets/cookies.txt` file.
+
+### Outline
+Read [this](https://docs.goauthentik.io/integrations/services/outline/)
