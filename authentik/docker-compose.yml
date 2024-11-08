@@ -1,0 +1,122 @@
+---
+services:
+    postgresql:
+        image: docker.io/library/postgres:16-alpine
+        restart: unless-stopped
+        healthcheck:
+            test:
+                [
+                    "CMD-SHELL",
+                    "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}",
+                ]
+            start_period: 20s
+            interval: 30s
+            retries: 5
+            timeout: 5s
+        volumes:
+            - database:/var/lib/postgresql/data
+        environment:
+            POSTGRES_PASSWORD: ${PG_PASS:?database password required}
+            POSTGRES_USER: ${PG_USER:-authentik}
+            POSTGRES_DB: ${PG_DB:-authentik}
+        env_file:
+            - .env
+    redis:
+        image: docker.io/library/redis:alpine
+        command: --save 60 1 --loglevel warning
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+            start_period: 20s
+            interval: 30s
+            retries: 5
+            timeout: 3s
+        volumes:
+            - redis:/data
+    server:
+        image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.10.1}
+        restart: unless-stopped
+        command: server
+        environment:
+            AUTHENTIK_REDIS__HOST: redis
+            AUTHENTIK_POSTGRESQL__HOST: postgresql
+            AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+            AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+            AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=traefik"
+            - "traefik.http.routers.authentik.rule=Host(`auth2.home.spyr.dev`)"
+            - "traefik.http.routers.authentik.entrypoints=websecure"
+            - "traefik.http.services.authentik.loadbalancer.server.port=9000"
+            - "traefik.http.routers.authentik.tls=true"
+            - "traefik.http.routers.authentik.tls.certresolver=porkbun"
+
+            - "traefik.http.middlewares.authentik.forwardAuth.address=http://server:9000/outpost.goauthentik.io/auth/traefik"
+            - "traefik.http.middlewares.authentik.forwardAuth.trustForwardHeader=true"
+            - "traefik.http.middlewares.authentik.forwardAuth.authResponseHeaders=X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version"
+        volumes:
+            - ./media:/media
+            - ./custom-templates:/templates
+        env_file:
+            - .env
+        networks:
+            - traefik
+            - default
+        depends_on:
+            - postgresql
+            - redis
+    worker:
+        image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2024.10.1}
+        restart: unless-stopped
+        command: worker
+        environment:
+            AUTHENTIK_REDIS__HOST: redis
+            AUTHENTIK_POSTGRESQL__HOST: postgresql
+            AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
+            AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+            AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+        # `user: root` and the docker socket volume are optional.
+        # See more for the docker socket integration here:
+        # https://goauthentik.io/docs/outposts/integrations/docker
+        # Removing `user: root` also prevents the worker from fixing the permissions
+        # on the mounted folders, so when removing this make sure the folders have the correct UID/GID
+        # (1000:1000 by default)
+        user: root
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./media:/media
+            - ./certs:/certs
+            - ./custom-templates:/templates
+        env_file:
+            - .env
+        depends_on:
+            - postgresql
+            - redis
+
+    whoami:
+        image: traefik/whoami
+        restart: unless-stopped
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.whoami2.rule=Host(`whoami2.home.spyr.dev`)"
+            - "traefik.http.services.whoami2.loadbalancer.server.port=443"
+            - "traefik.http.routers.whoami2.entrypoints=websecure"
+            - "traefik.http.routers.whoami2.tls=true"
+            - "traefik.http.routers.whoami2.tls.certresolver=porkbun"
+            - "traefik.http.routers.whoami2.middlewares=authentik@docker"
+        environment:
+            - "WHOAMI_PORT_NUMBER=443"
+        networks:
+            - traefik
+            - default
+
+volumes:
+    database:
+        driver: local
+    redis:
+        driver: local
+
+networks:
+    traefik:
+        external: true

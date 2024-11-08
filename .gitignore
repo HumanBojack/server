@@ -3,3 +3,4 @@ minecraft/data/
 authelia/config/
 mlflow/db/
 n8n/common_data/
+authentik/.env
