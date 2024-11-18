@@ -1,0 +1,18 @@
+services:
+    app:
+        image: ghcr.io/humanbojack/website:latest
+        networks:
+            - traefik
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=traefik"
+            - "traefik.http.routers.website.rule=Host(`spyr.dev`)"
+            - "traefik.http.routers.website.entrypoints=websecure"
+            - "traefik.http.services.website.loadbalancer.server.port=3000"
+            - "traefik.http.routers.website.tls=true"
+            - "traefik.http.routers.website.tls.certresolver=porkbun"
+            - "com.centurylinklabs.watchtower.enable=true"
+
+networks:
+    traefik:
+        external: true
