@@ -5,6 +5,7 @@ services:
         volumes:
             - ./redis.conf:/redis.conf
         command: ["redis-server", "/redis.conf"]
+        restart: unless-stopped
         healthcheck:
             test: ["CMD", "redis-cli", "ping"]
             interval: 10s
@@ -22,6 +23,7 @@ services:
             POSTGRES_DB: outline
         volumes:
             - ./postgres:/var/lib/postgresql/data
+        restart: unless-stopped
         healthcheck:
             test: ["CMD", "pg_isready", "-d", "outline", "-U", "outline"]
             interval: 10s
