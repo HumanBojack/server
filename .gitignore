@@ -8,3 +8,9 @@ authentik/media/
 outline/.env
 gitea/gitea/
 gitea/postgres/
+lidarr/lidarr_config/
+lidarr/lidarr_data/
+lidarr/navidrome_data/
+lidarr/prowlarr_config/
+lidarr/prowlarr_data/
+lidarr/qbittorrent_config/
