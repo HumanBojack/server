@@ -1,0 +1,21 @@
+services:
+    homepage:
+        image: ghcr.io/gethomepage/homepage:latest
+        container_name: homepage
+        volumes:
+            - /opt/configs/homepage/config:/app/config
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=traefik"
+            - "traefik.http.routers.homepage.rule=Host(`home.spyr.dev`)"
+            - "traefik.http.routers.homepage.entrypoints=websecure"
+            - "traefik.http.routers.homepage.tls=true"
+            - "traefik.http.routers.homepage.tls.certresolver=porkbun"
+            - "traefik.http.services.homepage.loadbalancer.server.port=3000"
+            - "traefik.http.routers.homepage.middlewares=authentik@docker"
+        networks:
+            - traefik
+
+networks:
+    traefik:
+        external: true
