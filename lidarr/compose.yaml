@@ -69,9 +69,12 @@ services:
             - traefik
 
     # TODO: add bitmagnet
+    # TODO: add soulseek (Soularr, Slskd)
+    # TODO: add usenet
 
     navidrome:
         image: deluan/navidrome:latest
+        container_name: navidrome
         user: 1000:1000
         restart: unless-stopped
         environment:
@@ -87,6 +90,26 @@ services:
             - "traefik.http.routers.music.tls=true"
             - "traefik.http.routers.music.tls.certresolver=porkbun"
             - "traefik.http.services.music.loadbalancer.server.port=4533"
+        networks:
+            - traefik
+
+    slskd:
+        image: slskd/slskd
+        container_name: slskd
+        environment:
+            - SLSKD_REMOTE_CONFIGURATION=true
+        volumes:
+            - /opt/configs/lidarr/slskd_data:/app
+        restart: unless-stopped
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=traefik"
+            - "traefik.http.routers.slskd.rule=Host(`slskd.home.spyr.dev`)"
+            - "traefik.http.routers.slskd.entrypoints=websecure"
+            - "traefik.http.routers.slskd.tls=true"
+            - "traefik.http.routers.slskd.tls.certresolver=porkbun"
+            - "traefik.http.services.slskd.loadbalancer.server.port=5030"
+            - "traefik.http.routers.slskd.middlewares=authentik@docker"
         networks:
             - traefik
 
