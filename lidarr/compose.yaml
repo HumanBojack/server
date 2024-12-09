@@ -10,6 +10,7 @@ services:
             - downloads:/downloads
             - /mnt/music:/music
             - /opt/configs/lidarr/lidarr_config:/config
+            - /opt/configs/lidarr/slskd_downloads:/slskd_downloads
         restart: unless-stopped
         labels:
             - "traefik.enable=true"
@@ -21,6 +22,7 @@ services:
             - "traefik.http.services.lidarr.loadbalancer.server.port=8686"
         networks:
             - traefik
+            - default
 
     qbittorrent:
         image: lscr.io/linuxserver/qbittorrent:latest
@@ -96,9 +98,11 @@ services:
     slskd:
         image: slskd/slskd
         container_name: slskd
+        user: 1000:1000
         environment:
             - SLSKD_REMOTE_CONFIGURATION=true
         volumes:
+            - /opt/configs/lidarr/slskd_downloads:/downloads
             - /opt/configs/lidarr/slskd_data:/app
         restart: unless-stopped
         labels:
@@ -112,6 +116,27 @@ services:
             - "traefik.http.routers.slskd.middlewares=authentik@docker"
         networks:
             - traefik
+            - default
+
+    soularr:
+        image: mrusse08/soularr:latest
+        container_name: soularr
+        hostname: soularr
+        restart: unless-stopped
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Europe/Paris
+            - SCRIPT_INTERVAL=300
+        depends_on:
+            - slskd
+            - lidarr
+        user: "1000:1000"
+        volumes:
+            - /opt/configs/lidarr/slskd_downloads:/downloads
+            - /opt/configs/lidarr/soularr_data:/data
+        networks:
+            - default
 
 networks:
     traefik:

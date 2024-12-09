@@ -15,4 +15,6 @@ lidarr/prowlarr_config/
 lidarr/prowlarr_data/
 lidarr/qbittorrent_config/
 lidarr/slskd_data/
+lidarr/slskd_downloads/
+lidarr/soularr_data/
 homepage/config
