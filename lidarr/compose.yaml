@@ -71,7 +71,6 @@ services:
             - traefik
 
     # TODO: add bitmagnet
-    # TODO: add soulseek (Soularr, Slskd)
     # TODO: add usenet
 
     navidrome:
@@ -101,9 +100,12 @@ services:
         user: 1000:1000
         environment:
             - SLSKD_REMOTE_CONFIGURATION=true
+        ports:
+            - "50300:50300"
         volumes:
             - /opt/configs/lidarr/slskd_downloads:/downloads
             - /opt/configs/lidarr/slskd_data:/app
+            - /mnt/music:/music:ro
         restart: unless-stopped
         labels:
             - "traefik.enable=true"
