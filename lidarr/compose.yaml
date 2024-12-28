@@ -140,6 +140,25 @@ services:
         networks:
             - default
 
+    picard:
+        image: mikenye/picard:latest
+        container_name: picard
+        volumes:
+            - /opt/configs/lidarr/picard_config:/config
+            - /mnt/music:/music
+            - /opt/configs/lidarr/slskd_downloads:/slskd_downloads
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=traefik"
+            - "traefik.http.routers.picard.rule=Host(`picard.home.spyr.dev`)"
+            - "traefik.http.routers.picard.entrypoints=websecure"
+            - "traefik.http.routers.picard.tls=true"
+            - "traefik.http.routers.picard.tls.certresolver=porkbun"
+            - "traefik.http.services.picard.loadbalancer.server.port=5800"
+            - "traefik.http.routers.picard.middlewares=authentik@docker"
+        networks:
+            - traefik
+
 networks:
     traefik:
         external: true
