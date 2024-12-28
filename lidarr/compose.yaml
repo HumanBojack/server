@@ -30,6 +30,9 @@ services:
         restart: unless-stopped
         environment:
             ND_BASEURL: "https://music.spyr.dev"
+            ND_ENABLESHARING: true
+        env_file:
+            - /opt/configs/secrets/navidrome.env
         volumes:
             - /opt/configs/lidarr/navidrome_data:/data
             - /mnt/music:/music:ro

@@ -79,3 +79,12 @@ In order to use cookies with metube, you can add your cookies to the `secrets/co
 
 ### Outline
 Read [this](https://docs.goauthentik.io/integrations/services/outline/)
+
+### Navidrome
+Theses are API urls for external services:
+```
+ND_LASTFM_APIKEY=
+ND_LASTFM_SECRET=
+ND_SPOTIFY_ID=
+ND_SPOTIFY_SECRET=
+```
