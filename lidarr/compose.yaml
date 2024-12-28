@@ -7,7 +7,6 @@ services:
             - PGID=1000
             - TZ=Europe/Paris
         volumes:
-            - downloads:/downloads
             - /mnt/music:/music
             - /opt/configs/lidarr/lidarr_config:/config
             - /opt/configs/lidarr/slskd_downloads:/slskd_downloads
@@ -23,55 +22,6 @@ services:
         networks:
             - traefik
             - default
-
-    qbittorrent:
-        image: lscr.io/linuxserver/qbittorrent:latest
-        container_name: qbittorrent
-        environment:
-            - PUID=1000
-            - PGID=1000
-            - TZ=Europe/Paris
-            - WEBUI_PORT=8080
-            - TORRENTING_PORT=6881
-        volumes:
-            - /opt/configs/lidarr/qbittorrent_config:/config
-            - downloads:/downloads
-        restart: unless-stopped
-        labels:
-            - "traefik.enable=true"
-            - "traefik.docker.network=traefik"
-            - "traefik.http.routers.qbittorrent.rule=Host(`qbittorrent.home.spyr.dev`)"
-            - "traefik.http.routers.qbittorrent.entrypoints=websecure"
-            - "traefik.http.routers.qbittorrent.tls=true"
-            - "traefik.http.routers.qbittorrent.tls.certresolver=porkbun"
-            - "traefik.http.services.qbittorrent.loadbalancer.server.port=8080"
-        networks:
-            - traefik
-
-    prowlarr:
-        image: lscr.io/linuxserver/prowlarr:latest
-        container_name: prowlarr
-        environment:
-            - PUID=1000
-            - PGID=1000
-            - TZ=Etc/UTC
-        volumes:
-            - /opt/configs/lidarr/prowlarr_data:/data
-            - /opt/configs/lidarr/prowlarr_config:/config
-        restart: unless-stopped
-        labels:
-            - "traefik.enable=true"
-            - "traefik.docker.network=traefik"
-            - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.home.spyr.dev`)"
-            - "traefik.http.routers.prowlarr.entrypoints=websecure"
-            - "traefik.http.routers.prowlarr.tls=true"
-            - "traefik.http.routers.prowlarr.tls.certresolver=porkbun"
-            - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
-        networks:
-            - traefik
-
-    # TODO: add bitmagnet
-    # TODO: add usenet
 
     navidrome:
         image: deluan/navidrome:latest
@@ -162,6 +112,3 @@ services:
 networks:
     traefik:
         external: true
-
-volumes:
-    downloads:
