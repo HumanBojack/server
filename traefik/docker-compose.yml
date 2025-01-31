@@ -1,38 +1,43 @@
 services:
-  reverse-proxy:
-    image: traefik:v3.0
-    container_name: reverse-proxy
-    restart: unless-stopped
-    command: 
-      - --api.insecure=true
-      - --providers.docker
-      - --providers.docker.exposedbydefault=false
-      - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-      - --certificatesresolvers.porkbun.acme.dnschallenge=true
-      - --certificatesresolvers.porkbun.acme.dnschallenge.provider=porkbun
-      - --certificatesresolvers.porkbun.acme.email=spyr.dev@proton.me
-      - --certificatesresolvers.porkbun.acme.storage=/acme/acme.json
-      - --entrypoints.web.http.redirections.entryPoint.to=websecure
-      - --log.level=DEBUG
-    ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /opt/configs/secrets/acme.json:/acme/acme.json
-    env_file:
-      - /opt/configs/secrets/porkbun.env
-    secrets:
-      - usersfile
-    networks:
-      - "traefik"
+    reverse-proxy:
+        image: traefik:v3
+        container_name: reverse-proxy
+        restart: unless-stopped
+        command:
+            - --api.insecure=true
+            - --providers.docker
+            - --providers.docker.exposedbydefault=false
+            - --entrypoints.web.address=:80
+            - --entrypoints.websecure.address=:443
+            - --certificatesresolvers.porkbun.acme.dnschallenge=true
+            - --certificatesresolvers.porkbun.acme.dnschallenge.provider=porkbun
+            - --certificatesresolvers.porkbun.acme.email=spyr.dev@proton.me
+            - --certificatesresolvers.porkbun.acme.storage=/acme/acme.json
+            - --entrypoints.web.http.redirections.entryPoint.to=websecure
+            - --log.level=DEBUG
+
+            # Check if necessary
+            - --certificatesresolvers.porkbun.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53
+            - --certificatesresolvers.porkbun.acme.dnschallenge.delaybeforecheck=30s
+            - --certificatesresolvers.porkbun.acme.dnschallenge.resolvers.timeout=30s
+        ports:
+            - "80:80"
+            - "443:443"
+            - "8080:8080"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /opt/configs/secrets/acme.json:/acme/acme.json
+        env_file:
+            - /opt/configs/secrets/porkbun.env
+        secrets:
+            - usersfile
+        networks:
+            - "traefik"
 
 secrets:
-  usersfile:
-    file: /opt/configs/secrets/usersfile.txt
+    usersfile:
+        file: /opt/configs/secrets/usersfile.txt
 
 networks:
-  traefik:
-    name: "traefik"
+    traefik:
+        name: "traefik"
