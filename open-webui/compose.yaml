@@ -1,0 +1,38 @@
+services:
+    openwebui:
+        image: ghcr.io/open-webui/open-webui:main
+        container_name: oim-openwebui
+        restart: unless-stopped
+        environment:
+            ENABLE_RAG_WEB_SEARCH: True
+            RAG_WEB_SEARCH_ENGINE: "brave"
+            RAG_WEB_SEARCH_RESULT_COUNT: 3
+            RAG_WEB_SEARCH_CONCURRENT_REQUESTS: 10
+        env_file: /opt/configs/secrets/openwebui.env
+        volumes:
+            - open-webui:/app/backend/data
+        networks:
+            - traefik
+            - default
+        labels:
+            - traefik.enable=true
+            - "traefik.docker.network=traefik"
+            - traefik.http.routers.openwebui.entrypoints=websecure
+            - traefik.http.routers.openwebui.tls=true
+            - traefik.http.routers.openwebui.tls.certresolver=porkbun
+            - traefik.http.routers.openwebui.rule=Host(`chat.home.spyr.dev`)
+            - traefik.http.services.openwebui.loadbalancer.server.port=8080
+
+    openwebui-pipelines:
+        image: ghcr.io/open-webui/pipelines:main
+        container_name: openwebui-pipelines
+        restart: unless-stopped
+        volumes:
+            - ./volumes/pipelines:/app/pipelines
+
+volumes:
+    open-webui:
+
+networks:
+    traefik:
+        external: true
