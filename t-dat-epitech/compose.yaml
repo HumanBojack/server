@@ -1,0 +1,8 @@
+services:
+    mongo:
+        container_name: epitech-mongo
+        restart: unless-stopped
+        image: mongo:latest
+        env_file: /opt/configs/secrets/epitech-mongo.env
+        ports:
+            - 27017:27017
