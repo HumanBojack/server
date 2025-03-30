@@ -46,6 +46,7 @@ services:
             - "traefik.http.services.music.loadbalancer.server.port=4533"
         networks:
             - traefik
+            - default
 
     slskd:
         image: slskd/slskd
@@ -111,6 +112,15 @@ services:
             - "traefik.http.routers.picard.middlewares=authentik@docker"
         networks:
             - traefik
+
+    navicord:
+        image: humanbojack/navicord:latest
+        container_name: navicord
+        restart: unless-stopped
+        depends_on:
+            - navidrome
+        env_file:
+            - /opt/configs/secrets/navicord.env
 
 networks:
     traefik:
