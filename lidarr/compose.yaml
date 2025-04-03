@@ -114,7 +114,7 @@ services:
             - traefik
 
     navicord:
-        image: humanbojack/navicord:latest
+        image: logixism/navicord:latest
         container_name: navicord
         restart: unless-stopped
         depends_on:
