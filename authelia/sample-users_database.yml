@@ -1,9 +1,0 @@
-users:
-  change-this-username:
-    disabled: false
-    displayname: change-this-username
-    password: change-this-password
-    email: change-this-email
-    groups:
-      - admin
-      - user

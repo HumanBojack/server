@@ -1,30 +1,30 @@
 services:
-  metube:
-    image: ghcr.io/alexta69/metube
-    container_name: metube
-    restart: unless-stopped
-    environment:
-      - YTDL_OPTIONS={"cookiefile":"/cookies.txt"}
-      - DELETE_FILE_ON_TRASHCAN=true
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
-      - "traefik.http.routers.metube.rule=Host(`dl.home.spyr.dev`)"
-      - "traefik.http.routers.metube.entrypoints=websecure"
-      - "traefik.http.services.metube.loadbalancer.server.port=8081"
-      - "traefik.http.routers.metube.tls=true"
-      - "traefik.http.routers.metube.tls.certresolver=porkbun"
-      - "traefik.http.routers.metube.middlewares=authelia@docker"
-      - "com.centurylinklabs.watchtower.enable=true"
-    volumes:
-      - metube_data:/downloads
-      - /opt/configs/secrets/cookies.txt:/cookies.txt
-    networks:
-      - traefik
+    metube:
+        image: ghcr.io/alexta69/metube
+        container_name: metube
+        restart: unless-stopped
+        environment:
+            - YTDL_OPTIONS={"cookiefile":"/cookies.txt"}
+            - DELETE_FILE_ON_TRASHCAN=true
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=traefik"
+            - "traefik.http.routers.metube.rule=Host(`dl.home.spyr.dev`)"
+            - "traefik.http.routers.metube.entrypoints=websecure"
+            - "traefik.http.services.metube.loadbalancer.server.port=8081"
+            - "traefik.http.routers.metube.tls=true"
+            - "traefik.http.routers.metube.tls.certresolver=porkbun"
+            - "traefik.http.routers.metube.middlewares=authentik@docker"
+            - "com.centurylinklabs.watchtower.enable=true"
+        volumes:
+            - metube_data:/downloads
+            - /opt/configs/secrets/cookies.txt:/cookies.txt
+        networks:
+            - traefik
 
 volumes:
-  metube_data:
+    metube_data:
 
 networks:
-  traefik:
-    external: true
+    traefik:
+        external: true

@@ -14,7 +14,7 @@ services:
             - "traefik.http.routers.prometheus.tls=true"
             - "traefik.http.routers.prometheus.tls.certresolver=porkbun"
             - "traefik.docker.network=traefik"
-            - "traefik.http.routers.prometheus.middlewares=authelia@docker"
+            - "traefik.http.routers.prometheus.middlewares=authentik@docker"
         networks:
             - traefik
             - default

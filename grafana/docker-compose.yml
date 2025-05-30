@@ -1,50 +1,50 @@
 services:
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    restart: unless-stopped
-    volumes:
-      - grafana-data:/var/lib/grafana
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=traefik"
-      - "traefik.http.routers.grafana.rule=Host(`grafana.home.spyr.dev`)"
-      - "traefik.http.routers.grafana.entrypoints=websecure"
-      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
-      - "traefik.http.routers.grafana.tls=true"
-      - "traefik.http.routers.grafana.tls.certresolver=porkbun"
-      - "traefik.http.routers.grafana.middlewares=authelia@docker"
-    networks:
-      - traefik
-      - default
-  
-  loki:
-    image: grafana/loki:latest
-    container_name: loki
-    user: "0:0"
-    restart: unless-stopped
-    volumes:
-      - ./loki-config.yml:/etc/loki/local-config.yaml
-      - loki-data:/loki
-    command: -config.file=/etc/loki/local-config.yaml
-    networks:
-      - default
+    grafana:
+        image: grafana/grafana:latest
+        container_name: grafana
+        restart: unless-stopped
+        volumes:
+            - grafana-data:/var/lib/grafana
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=traefik"
+            - "traefik.http.routers.grafana.rule=Host(`grafana.home.spyr.dev`)"
+            - "traefik.http.routers.grafana.entrypoints=websecure"
+            - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+            - "traefik.http.routers.grafana.tls=true"
+            - "traefik.http.routers.grafana.tls.certresolver=porkbun"
+            - "traefik.http.routers.grafana.middlewares=authentik@docker"
+        networks:
+            - traefik
+            - default
 
-  promtail:
-    image: grafana/promtail:latest
-    container_name: promtail
-    restart: unless-stopped
-    volumes:
-      - ./promtail-config.yml:/etc/promtail/config.yml
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-    command: -config.file=/etc/promtail/config.yml
-    networks:
-      - default
+    loki:
+        image: grafana/loki:latest
+        container_name: loki
+        user: "0:0"
+        restart: unless-stopped
+        volumes:
+            - ./loki-config.yml:/etc/loki/local-config.yaml
+            - loki-data:/loki
+        command: -config.file=/etc/loki/local-config.yaml
+        networks:
+            - default
+
+    promtail:
+        image: grafana/promtail:latest
+        container_name: promtail
+        restart: unless-stopped
+        volumes:
+            - ./promtail-config.yml:/etc/promtail/config.yml
+            - /var/lib/docker/containers:/var/lib/docker/containers:ro
+        command: -config.file=/etc/promtail/config.yml
+        networks:
+            - default
 
 volumes:
-  grafana-data:
-  loki-data:
+    grafana-data:
+    loki-data:
 
 networks:
-  traefik:
-    external: true
+    traefik:
+        external: true

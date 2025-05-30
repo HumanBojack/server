@@ -59,13 +59,6 @@ username:bcrypt_hashed_password
 other_username:bcrypt_hashed_password
 ```
 
-### Authelia
-In order to use Authelia, you will need to create the following files:
-- `authelia/config/configuration.yml`
-- `authelia/config/users_database.yml`
-
-You can find examples of these files in the `authelia/` directory.
-
 ### MLflow
 In order to use MLflow, you will need to create the following files:
 - `mlflow/db/mlflow.db`
