@@ -15,12 +15,14 @@ services:
             - traefik
         labels:
             - traefik.enable=true
-            - "traefik.docker.network=traefik"
+            - traefik.docker.network=traefik
             - traefik.http.routers.openwebui.entrypoints=websecure
             - traefik.http.routers.openwebui.tls=true
             - traefik.http.routers.openwebui.tls.certresolver=porkbun
             - traefik.http.routers.openwebui.rule=Host(`chat.home.spyr.dev`)
             - traefik.http.services.openwebui.loadbalancer.server.port=8080
+            - com.centurylinklabs.watchtower.enable=true
+
 
 volumes:
     open-webui:

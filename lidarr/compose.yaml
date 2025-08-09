@@ -19,6 +19,7 @@ services:
             - "traefik.http.routers.lidarr.tls=true"
             - "traefik.http.routers.lidarr.tls.certresolver=porkbun"
             - "traefik.http.services.lidarr.loadbalancer.server.port=8686"
+            - "com.centurylinklabs.watchtower.enable=true"
         networks:
             - traefik
             - default
@@ -44,6 +45,7 @@ services:
             - "traefik.http.routers.music.tls=true"
             - "traefik.http.routers.music.tls.certresolver=porkbun"
             - "traefik.http.services.music.loadbalancer.server.port=4533"
+            - "com.centurylinklabs.watchtower.enable=true"
         networks:
             - traefik
             - default

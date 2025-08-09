@@ -1,5 +1,6 @@
 secrets/
 minecraft/data/
+minecraft/mc-data/
 authelia/config/
 mlflow/db/
 n8n/common_data/
