@@ -81,3 +81,22 @@ ND_LASTFM_SECRET=
 ND_SPOTIFY_ID=
 ND_SPOTIFY_SECRET=
 ```
+
+### Tandoor
+Setup is based on the [tandoor documentation](https://docs.tandoor.dev/install/docker/) and [authentik documentation](https://integrations.goauthentik.io/documentation/tandoor/)
+Create a `secrets/.env.tandoor` file with the following format:
+
+```
+SECRET_KEY=generate it
+TZ=Europe/Paris
+ALLOWED_HOSTS=tandoor.home.spyr.dev
+DB_ENGINE=django.db.backends.postgresql
+POSTGRES_HOST=tandoor_db
+POSTGRES_DB=djangodb
+POSTGRES_PORT=5432
+POSTGRES_USER=djangouser
+POSTGRES_PASSWORD=generate it
+
+SOCIAL_PROVIDERS=allauth.socialaccount.providers.openid_connect
+SOCIALACCOUNT_PROVIDERS='{"openid_connect":{"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"","secret":"","settings":{"server_url":"https://auth2.home.spyr.dev/application/o/tandoor/.well-known/openid-configuration"}}]}}'
+```

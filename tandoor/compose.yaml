@@ -1,0 +1,42 @@
+services:
+    tandoor_web:
+        image: vabene1111/recipes
+        container_name: tandoor_web
+        restart: unless-stopped
+        volumes:
+            - staticfiles:/opt/recipes/staticfiles
+            - ./mediafiles:/opt/recipes/mediafiles
+        env_file:
+            - /opt/configs/secrets/.env.tandoor
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=traefik"
+            - "traefik.http.routers.tandoor_web.rule=Host(`tandoor.home.spyr.dev`)"
+            - "traefik.http.routers.tandoor_web.entrypoints=websecure"
+            - "traefik.http.services.tandoor_web.loadbalancer.server.port=80"
+            - "traefik.http.routers.tandoor_web.tls=true"
+            - "traefik.http.routers.tandoor_web.tls.certresolver=porkbun"
+            - "traefik.http.routers.tandoor_web.middlewares=authentik@docker"
+            - "com.centurylinklabs.watchtower.enable=true"
+        networks:
+            - default
+            - traefik
+
+    tandoor_db:
+        image: postgres:16
+        container_name: tandoor_db
+        restart: unless-stopped
+        volumes:
+            - db_data:/var/lib/postgresql/data
+        env_file:
+            - /opt/configs/secrets/.env.tandoor
+        networks:
+            - default
+
+networks:
+    traefik:
+        external: true
+
+volumes:
+    staticfiles:
+    db_data:
