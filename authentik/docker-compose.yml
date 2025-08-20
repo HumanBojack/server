@@ -94,23 +94,6 @@ services:
             - postgresql
             - redis
 
-    whoami:
-        image: traefik/whoami
-        restart: unless-stopped
-        labels:
-            - "traefik.enable=true"
-            - "traefik.http.routers.whoami2.rule=Host(`whoami2.home.spyr.dev`)"
-            - "traefik.http.services.whoami2.loadbalancer.server.port=443"
-            - "traefik.http.routers.whoami2.entrypoints=websecure"
-            - "traefik.http.routers.whoami2.tls=true"
-            - "traefik.http.routers.whoami2.tls.certresolver=porkbun"
-            - "traefik.http.routers.whoami2.middlewares=authentik@docker"
-        environment:
-            - "WHOAMI_PORT_NUMBER=443"
-        networks:
-            - traefik
-            - default
-
 volumes:
     database:
         driver: local
