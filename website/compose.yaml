@@ -3,10 +3,11 @@ services:
         image: ghcr.io/humanbojack/website:latest
         networks:
             - traefik
+        restart: unless-stopped
         labels:
             - "traefik.enable=true"
             - "traefik.docker.network=traefik"
-            - "traefik.http.routers.website.rule=Host(`spyr.dev`)"
+            - "traefik.http.routers.website.rule=Host(`spyr.dev`) || Host(`www.spyr.dev`)"
             - "traefik.http.routers.website.entrypoints=websecure"
             - "traefik.http.services.website.loadbalancer.server.port=3000"
             - "traefik.http.routers.website.tls=true"

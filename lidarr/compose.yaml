@@ -99,6 +99,7 @@ services:
     picard:
         image: mikenye/picard:latest
         container_name: picard
+        restart: unless-stopped
         volumes:
             - /opt/configs/lidarr/picard_config:/config
             - /mnt/music:/music

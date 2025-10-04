@@ -21,3 +21,7 @@ lidarr/soularr_data/
 lidarr/picard_config/
 homepage/config
 open-webui/volumes
+hidden/
+tandoor/mediafiles/recipes
+immich/.env
+immich/import_stuff.md
