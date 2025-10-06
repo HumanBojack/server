@@ -5,14 +5,19 @@ services:
         restart: unless-stopped
         networks:
             - traefik
+            - adminer
         labels:
             - "traefik.enable=true"
+            - "traefik.docker.network=traefik"
             - "traefik.http.routers.adminer.rule=Host(`adminer.home.spyr.dev`)"
             - "traefik.http.services.adminer.loadbalancer.server.port=8080"
             - "traefik.http.routers.adminer.entrypoints=websecure"
             - "traefik.http.routers.adminer.tls.certresolver=porkbun"
             - "traefik.http.routers.adminer.middlewares=authentik@docker"
+            - "com.centurylinklabs.watchtower.enable=true"
 
 networks:
     traefik:
         external: true
+    adminer:
+        name: "adminer"
